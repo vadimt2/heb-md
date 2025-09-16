@@ -520,7 +520,7 @@
             const loadingElement = document.getElementById('loading');
             loadingElement.style.display = 'none';
 
-            // Simple markdown mode that tags code and math sections with more specific classes
+            // Simple markdown mode that tags code, inline code and math sections with more specific classes
             CodeMirror.defineMode("markdownWithCodeMath", function (config) {
                 // Get the underlying markdown mode
                 const markdownMode = CodeMirror.getMode(config, "markdown");
@@ -530,6 +530,7 @@
                     startState: function () {
                         return {
                             inCodeBlock: false,
+                            inInlineCode: false,
                             inMathBlock: false,
                             inMath: false
                         };
@@ -544,6 +545,23 @@
                         if (state.inCodeBlock) {
                             stream.skipToEnd();
                             return "comment";
+                        }
+
+                        // Inline code using backticks
+                        if (stream.match(/^`/)) {
+                            state.inInlineCode = !state.inInlineCode;
+                            return "inline-code formatting-code";
+                        }
+
+                        if (state.inInlineCode) {
+                            // Consume until next backtick or end of line
+                            let matched = stream.match(/^[^`]+(?=`)/);
+                            if (matched) {
+                                return "inline-code";
+                            } else {
+                                stream.skipToEnd();
+                                return "inline-code";
+                            }
                         }
 
                         // Math blocks

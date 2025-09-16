@@ -831,9 +831,17 @@ button {
   text-align: left !important;
 }
 
+/* Keep inline code LTR but isolated so it doesn't flip RTL lines */
+.CodeMirror .cm-inline-code,
+.CodeMirror .cm-formatting-code {
+  direction: ltr !important;
+  text-align: left !important;
+  unicode-bidi: isolate;
+  display: inline-block;
+}
+
 .CodeMirror-line:has(.cm-math-block),
-.CodeMirror-line:has(.cm-math-inline),
-.CodeMirror-line:has(.cm-comment) {
+.CodeMirror-line:has(.cm-math-inline) {
   direction: ltr !important;
 }
 
@@ -900,6 +908,7 @@ button {
   padding: var(--space-2xl);
   color: var(--text-primary);
   direction: rtl;
+  text-align: right;
   font-family: var(--font-family);
   line-height: 1.6;
   max-width: 900px;
@@ -946,6 +955,7 @@ button {
   font-size: 0.9em;
   direction: ltr;
   display: inline-block;
+  unicode-bidi: isolate;
 }
 
 [data-theme="dark"] .preview-content code {
